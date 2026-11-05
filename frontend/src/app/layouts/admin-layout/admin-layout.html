@@ -1,0 +1,33 @@
+<div class="admin-wrapper">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <h1 class="sidebar-logo">Admin</h1>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+        <hugeicons-icon [icon]="dashboardIcon" [size]="22" [strokeWidth]="1.5"></hugeicons-icon>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/admin/listings" routerLinkActive="active" class="nav-link">
+        <hugeicons-icon [icon]="carIcon" [size]="22" [strokeWidth]="1.5"></hugeicons-icon>
+        <span>Anúncios</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <span class="user-name">{{ user()?.name }}</span>
+        <span class="user-email">{{ user()?.email }}</span>
+      </div>
+      <button type="button" class="nav-link logout-btn" (click)="logout()">
+        <hugeicons-icon [icon]="logoutIcon" [size]="22" [strokeWidth]="1.5"></hugeicons-icon>
+        <span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

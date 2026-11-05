@@ -1,0 +1,163 @@
+<div class="container-lg">
+  <app-breadcrumb [items]="breadcrumbItems()"></app-breadcrumb>
+
+  @if (car(); as car) {
+    <div class="details-content">
+      <div class="details-image-section">
+        <div class="car-image-container">
+          <img [src]="selectedImage()" [alt]="car.title" loading="lazy" width="600" height="450" />
+        </div>
+
+        <!-- Image Gallery Thumbnails -->
+        @if (car.images.length > 1) {
+          <div class="image-gallery-thumbnails">
+            @for (img of car.images; track img.id) {
+              <button
+                class="thumbnail"
+                [class.active]="$index === selectedImageIndex()"
+                (click)="selectImage($index)"
+                [attr.aria-label]="'Imagem ' + ($index + 1) + ' de ' + car.images.length"
+              >
+                <img
+                  [src]="img.url"
+                  [alt]="'Thumbnail ' + ($index + 1)"
+                  loading="lazy"
+                  width="100"
+                  height="80"
+                />
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="details-info-section">
+        <!-- Title Section -->
+        <div class="title-section">
+          <h1 class="car-title">{{ car.title }}</h1>
+          <p class="car-model">{{ car.model }}</p>
+        </div>
+
+        <!-- Location Section -->
+        <div class="location-section">
+          <label>Cidade</label>
+          <p class="location-value">
+            <hugeicons-icon
+              [icon]="locationIcon"
+              [size]="18"
+              color="currentColor"
+              [strokeWidth]="1.5"
+            ></hugeicons-icon>
+            {{ car.locality }}
+          </p>
+        </div>
+
+        <!-- Specifications Grid -->
+        <div class="car-specs-grid">
+          <div class="spec-item">
+            <label>
+              <hugeicons-icon
+                [icon]="calendarIcon"
+                [size]="16"
+                color="currentColor"
+                [strokeWidth]="1.5"
+              ></hugeicons-icon>
+              Ano
+            </label>
+            <span>{{ car.year }}/{{ car.manufacturingYear }}</span>
+          </div>
+          <div class="spec-item">
+            <label>
+              <hugeicons-icon
+                [icon]="kmIcon"
+                [size]="16"
+                color="currentColor"
+                [strokeWidth]="1.5"
+              ></hugeicons-icon>
+              KM
+            </label>
+            <span>{{ car.mileage | number }}</span>
+          </div>
+        </div>
+
+        <div class="car-actions">
+          <a
+            class="btn btn-success btn-lg w-100"
+            [href]="
+              'https://wa.me/' +
+              car.contactWhatsapp +
+              '?text=Olá, estou interessado no ' +
+              car.title +
+              ' ' +
+              car.model +
+              '. Poderia fornecer mais informações?'
+            "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <hugeicons-icon
+              [icon]="whatsappIcon"
+              [size]="20"
+              color="currentColor"
+              [strokeWidth]="1.5"
+            ></hugeicons-icon>
+            WhatsApp
+          </a>
+          <a [href]="'tel:' + digitsOnly(car.contactPhone)" class="btn btn-info btn-lg w-100">
+            <hugeicons-icon
+              [icon]="callIcon"
+              [size]="20"
+              color="currentColor"
+              [strokeWidth]="1.5"
+            ></hugeicons-icon>
+            {{ car.contactPhone }}
+          </a>
+        </div>
+
+        <div class="contact-section">
+          <h3>Contato</h3>
+          <div class="contact-info">
+            <p>
+              <strong>{{ car.contactName }}</strong>
+            </p>
+            <p>
+              <hugeicons-icon
+                [icon]="mailIcon"
+                [size]="18"
+                color="currentColor"
+                [strokeWidth]="1.5"
+              ></hugeicons-icon>
+              <a [href]="'mailto:' + car.contactEmail">{{ car.contactEmail }}</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+      <h3>Características do Veículo</h3>
+      <div class="features-grid">
+        @for (feature of car.features; track feature) {
+          <div class="feature-item">
+            <hugeicons-icon
+              [icon]="tickIcon"
+              [size]="20"
+              color="currentColor"
+              [strokeWidth]="1.5"
+            ></hugeicons-icon>
+            <span>{{ feature }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Description Section -->
+    <div class="description-section">
+      <h3>Descrição Completa</h3>
+      <p>{{ car.description }}</p>
+    </div>
+  }
+
+  <app-whatsapp-button></app-whatsapp-button>
+</div>

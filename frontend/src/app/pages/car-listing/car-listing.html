@@ -1,0 +1,236 @@
+<div class="listing-container">
+  <div class="listing-layout">
+    <!-- Sidebar com Filtros -->
+    <aside class="listing-sidebar">
+      <!-- Advanced Filters -->
+      <div class="cars-advanced-filters">
+        <h3 class="filters-title">Filtros avançados</h3>
+
+        <div class="filter-group">
+          <label>Modelo</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Digite o modelo"
+            [value]="filterModel()"
+            (change)="onFilterModelChange($event)"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label>Ano</label>
+          <div class="filter-range">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="De"
+              [value]="filterYearMin()"
+              (change)="onFilterYearMinChange($event)"
+            />
+            <span class="range-separator">-</span>
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Até"
+              [value]="filterYearMax()"
+              (change)="onFilterYearMaxChange($event)"
+            />
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Preço</label>
+          <div class="filter-range">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="De"
+              [value]="filterPriceMin()"
+              (change)="onFilterPriceMinChange($event)"
+            />
+            <span class="range-separator">-</span>
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Até"
+              [value]="filterPriceMax()"
+              (change)="onFilterPriceMaxChange($event)"
+            />
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-primary w-100" title="Buscar" (click)="onApplyFilters()">
+            <hugeicons-icon
+              [icon]="searchIcon"
+              [size]="18"
+              color="currentColor"
+              [strokeWidth]="1.5"
+            ></hugeicons-icon>
+            Buscar
+          </button>
+          <button
+            class="btn btn-outline-secondary w-100"
+            title="Limpar Filtros"
+            (click)="onResetFilters()"
+          >
+            <hugeicons-icon
+              [icon]="filterRemoveIcon"
+              [size]="18"
+              color="currentColor"
+              [strokeWidth]="1.5"
+            ></hugeicons-icon>
+            Limpar
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Grid Principal -->
+    <main class="listing-main">
+      <!-- Filtros e Contagem -->
+      <div class="cars-filter-bar">
+        <div class="filter-left">
+          <span class="records-count"
+            >{{ filteredListings().length }} anúncio(s) encontrado(s)</span
+          >
+        </div>
+        <div class="filter-right">
+          <!-- Sort Filter -->
+          <select class="form-select" (change)="onSortChange($event)" [value]="sortBy()">
+            <option value="default">Ordenar por</option>
+            <option value="price-asc">Menor Preço</option>
+            <option value="price-desc">Maior Preço</option>
+            <option value="name">Nome (A-Z)</option>
+          </select>
+
+          <!-- Location Filter -->
+          <div class="location-filter">
+            <select
+              class="form-select"
+              (change)="onLocationSelect($event)"
+              [value]="selectedLocation()"
+            >
+              <option value="">Localidade</option>
+              @for (location of availableLocations(); track location) {
+                <option [value]="location">{{ location }}</option>
+              }
+            </select>
+            @if (selectedLocation()) {
+              <button
+                class="btn-dismiss-location"
+                (click)="onDismissLocationPrompt()"
+                title="Limpar localidade"
+              >
+                ✕
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="cars-grid">
+        @if (isLoading()) {
+          <div class="empty-state-container">
+            <div class="empty-state">
+              <h3>Carregando anúncios...</h3>
+            </div>
+          </div>
+        } @else if (filteredListings().length > 0) {
+          <div class="row g-4">
+            @for (car of filteredListings(); track car.id) {
+              <div class="col-lg-4 col-md-6 col-12">
+                <div class="car-card">
+                  <div class="car-card-header">
+                    <div class="car-card-image">
+                      <img
+                        [src]="car.images[0]?.url ?? '/silvioautos.png'"
+                        [alt]="car.title"
+                        loading="lazy"
+                        width="512"
+                        height="288"
+                      />
+                      @if (car.isHighlight) {
+                        <div class="card-badges">
+                          <span class="badge badge-highlight">Destaque</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="car-card-body">
+                    <div class="car-info">
+                      <h5 class="car-title">{{ car.title }}</h5>
+                      <p class="car-specs">{{ car.model }}</p>
+                    </div>
+
+                    <div class="car-meta-info">
+                      <div class="meta-item">
+                        <hugeicons-icon
+                          [icon]="calendarIcon"
+                          [size]="16"
+                          color="currentColor"
+                          [strokeWidth]="1.5"
+                        ></hugeicons-icon>
+                        <span><strong>Ano Modelo:</strong> {{ car.year }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <hugeicons-icon
+                          [icon]="calendarIcon"
+                          [size]="16"
+                          color="currentColor"
+                          [strokeWidth]="1.5"
+                        ></hugeicons-icon>
+                        <span><strong>Fabricação:</strong> {{ car.manufacturingYear }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <hugeicons-icon
+                          [icon]="locationIcon"
+                          [size]="16"
+                          color="currentColor"
+                          [strokeWidth]="1.5"
+                        ></hugeicons-icon>
+                        <span><strong>Localidade:</strong> {{ car.locality }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <hugeicons-icon
+                          [icon]="engineIcon"
+                          [size]="16"
+                          color="currentColor"
+                          [strokeWidth]="1.5"
+                        ></hugeicons-icon>
+                        <span><strong>KM:</strong> {{ car.mileage | number }}</span>
+                      </div>
+                    </div>
+
+                    <div class="car-price">
+                      <span class="price-amount"
+                        >R$ {{ car.price | number: '1.0-0' : 'pt-BR' }}</span
+                      >
+                    </div>
+
+                    <button class="btn btn-primary w-100 btn-rent" (click)="onViewDetails(car.id)">
+                      Ver Detalhes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state-container">
+            <div class="empty-state">
+              <h3>Nenhum carro encontrado</h3>
+              <p>Desculpe, não encontramos carros que correspondem aos seus critérios de busca.</p>
+              <button class="btn btn-outline-primary" (click)="onResetFilters()">
+                Limpar Filtros
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </main>
+  </div>
+
+  <app-whatsapp-button></app-whatsapp-button>
+</div>

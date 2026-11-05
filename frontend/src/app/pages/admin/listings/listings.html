@@ -1,0 +1,72 @@
+<div class="listings-container">
+  <div class="listings-header">
+    <h1 class="listings-title">Anúncios</h1>
+    <a routerLink="/admin/listings/new" class="btn btn-primary">
+      <hugeicons-icon [icon]="plusIcon" [size]="18" [strokeWidth]="1.5"></hugeicons-icon>
+      Novo Anúncio
+    </a>
+  </div>
+
+  @if (listings().length > 0) {
+    <div class="listings-grid">
+      @for (listing of listings(); track listing.id) {
+        <div class="listing-card">
+          <div class="listing-header">
+            <div class="listing-title">
+              <h3>{{ listing.title }}</h3>
+              <p class="listing-brand">
+                {{ listing.brand }} {{ listing.model }} ({{ listing.year }})
+              </p>
+            </div>
+            <span [ngClass]="'status-badge status-' + statusClass(listing.status)">
+              {{ statusLabel(listing.status) }}
+            </span>
+          </div>
+
+          <div class="listing-details">
+            <div class="detail-item">
+              <span class="detail-label">Preço:</span>
+              <span class="detail-value">R$ {{ listing.price | number: '1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Quilometragem:</span>
+              <span class="detail-value">{{ listing.mileage | number: '1.0-0' }} km</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Data:</span>
+              <span class="detail-value">{{ listing.createdAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <p class="listing-description">{{ listing.description }}</p>
+
+          <div class="listing-actions">
+            <button class="btn btn-sm btn-secondary" (click)="toggleStatus(listing)">
+              @if (listing.status === 'ACTIVE') {
+                Desativar
+              } @else {
+                Ativar
+              }
+            </button>
+            <a
+              [routerLink]="['/admin/listings', listing.id, 'edit']"
+              class="btn btn-sm btn-warning"
+            >
+              <hugeicons-icon [icon]="editIcon" [size]="16" [strokeWidth]="1.5"></hugeicons-icon>
+              Editar
+            </a>
+            <button class="btn btn-sm btn-danger" (click)="onDelete(listing.id)">
+              <hugeicons-icon [icon]="trashIcon" [size]="16" [strokeWidth]="1.5"></hugeicons-icon>
+              Deletar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="alert alert-info">
+      Nenhum anúncio cadastrado ainda.
+      <a routerLink="/admin/listings/new" class="alert-link">Clique aqui para criar um novo</a>
+    </div>
+  }
+</div>

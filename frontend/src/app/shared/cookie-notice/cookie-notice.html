@@ -1,0 +1,20 @@
+@if (showCookieNotice()) {
+  <div class="cookie-notice">
+    <div class="cookie-content">
+      <div class="cookie-text">
+        <h4>Aviso de Cookies</h4>
+        <p>
+          Utilizamos cookies para melhorar sua experiência no site. Ao continuar navegando, você
+          concorda com o uso de cookies de acordo com nossa
+          <a href="#" class="cookie-link">Política de Privacidade</a>.
+        </p>
+      </div>
+      <div class="cookie-actions">
+        <button type="button" class="btn btn-secondary" (click)="onRejectCookies()">
+          Rejeitar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onAcceptCookies()">Aceitar</button>
+      </div>
+    </div>
+  </div>
+}

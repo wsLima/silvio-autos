@@ -1,0 +1,63 @@
+<header class="header">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="navbar-content">
+      <a class="navbar-brand logo-brand" href="#">
+        <div class="logo-container">
+          <div class="logo-text">
+            <span class="logo-main">
+              <span class="logo-first">SILVIO</span><span class="logo-second">AUTOS</span>
+            </span>
+            <span class="logo-slogan">É MAIS QUE VENDA DE CARROS</span>
+          </div>
+        </div>
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="ms-auto">
+          @if (isAuthenticated()) {
+            <div class="user-menu">
+              <span class="user-name">{{ user()?.name }}</span>
+              <button
+                type="button"
+                class="btn btn-light d-flex align-items-center gap-2"
+                (click)="onLogout()"
+              >
+                <hugeicons-icon
+                  [icon]="LogoutIcon"
+                  [size]="18"
+                  color="currentColor"
+                  [strokeWidth]="1.5"
+                ></hugeicons-icon>
+                Sair
+              </button>
+            </div>
+          } @else {
+            <button
+              type="button"
+              class="btn btn-primary d-flex align-items-center gap-2"
+              (click)="navigateToLogin()"
+            >
+              <hugeicons-icon
+                [icon]="UserCircleIcon"
+                [size]="18"
+                color="currentColor"
+                [strokeWidth]="1.5"
+              ></hugeicons-icon>
+              Login
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

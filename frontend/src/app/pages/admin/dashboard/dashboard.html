@@ -1,0 +1,180 @@
+<div class="dashboard-content">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Bem-vindo ao seu painel de controle</p>
+    </div>
+    <div class="header-date">
+      <hugeicons-icon [icon]="calendarIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      {{ currentDate | date: 'EEEE, d MMMM yyyy' }}
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <!-- Total de Anúncios -->
+    <div class="stat-card primary">
+      <div class="stat-icon">
+        <hugeicons-icon [icon]="chartIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Total de Anúncios</p>
+        <div class="stat-value">{{ totalListings() }}</div>
+        <p class="stat-change">Cadastrados na plataforma</p>
+      </div>
+    </div>
+
+    <!-- Anúncios Ativos -->
+    <div class="stat-card success">
+      <div class="stat-icon">
+        <hugeicons-icon [icon]="activeIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Anúncios Ativos</p>
+        <div class="stat-value">{{ activeListings() }}</div>
+        <p class="stat-change">
+          {{ activeListings() === totalListings() ? 'Todos publicados' : 'Publicados' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Anúncios Inativos -->
+    <div class="stat-card warning">
+      <div class="stat-icon">
+        <hugeicons-icon [icon]="pauseIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Anúncios Inativos</p>
+        <div class="stat-value">{{ inactiveListings() }}</div>
+        <p class="stat-change">Pausados</p>
+      </div>
+    </div>
+
+    <!-- Anúncios Vendidos -->
+    <div class="stat-card danger">
+      <div class="stat-icon">
+        <hugeicons-icon [icon]="checkIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Vendidos</p>
+        <div class="stat-value">{{ soldListings() }}</div>
+        <p class="stat-change">Concluídos</p>
+      </div>
+    </div>
+
+    <!-- Valor Total -->
+    <div class="stat-card info">
+      <div class="stat-icon">
+        <hugeicons-icon [icon]="coinIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Valor Total</p>
+        <div class="stat-value">R$ {{ totalValue() / 1000 | number: '1.0-0' }}k</div>
+        <p class="stat-change">Inventário</p>
+      </div>
+    </div>
+
+    <!-- Preço Médio -->
+    <div class="stat-card secondary">
+      <div class="stat-icon">
+        <hugeicons-icon [icon]="trendingIcon" [size]="28" [strokeWidth]="1.5"></hugeicons-icon>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Preço Médio</p>
+        <div class="stat-value">R$ {{ averagePrice() / 1000 | number: '1.0-0' }}k</div>
+        <p class="stat-change">Média por anúncio</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <!-- Anúncios Recentes -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-title">Anúncios Recentes</h2>
+          <p class="section-subtitle">Últimos 5 cadastrados</p>
+        </div>
+        <a href="/admin/listings" class="link-see-all">Ver Todos →</a>
+      </div>
+
+      @if (recentListings().length > 0) {
+        <div class="listings-table">
+          <div class="table-header">
+            <div class="col-title">Título</div>
+            <div class="col-brand">Marca/Modelo</div>
+            <div class="col-price">Preço</div>
+            <div class="col-status">Status</div>
+            <div class="col-date">Data</div>
+          </div>
+
+          <div class="table-body">
+            @for (listing of recentListings(); track listing.id) {
+              <div class="table-row">
+                <div class="col-title">
+                  <div class="listing-title">{{ listing.title }}</div>
+                  <div class="listing-desc">{{ listing.description }}</div>
+                </div>
+                <div class="col-brand">{{ listing.brand }} {{ listing.model }}</div>
+                <div class="col-price">
+                  <span class="price-tag">R$ {{ listing.price | number: '1.0-0' }}</span>
+                </div>
+                <div class="col-status">
+                  <span [ngClass]="'status-badge status-' + statusClass(listing.status)">
+                    {{ getStatusLabel(listing.status) }}
+                  </span>
+                </div>
+                <div class="col-date">
+                  <div class="date-value">{{ listing.createdAt | date: 'dd/MM' }}</div>
+                  <div class="date-relative">{{ getDaysAgo(listing.createdAt) }}d atrás</div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <h3 class="empty-title">Nenhum anúncio cadastrado</h3>
+          <p class="empty-description">Comece criando seu primeiro anúncio</p>
+          <a href="/admin/listings/new" class="btn btn-primary mt-3">Criar Primeiro Anúncio</a>
+        </div>
+      }
+    </div>
+
+    <!-- Most Expensive -->
+    @if (mostExpensive()) {
+      <div class="dashboard-section">
+        <div class="section-header">
+          <div class="section-title-group">
+            <h2 class="section-title">Anúncio Mais Caro</h2>
+          </div>
+        </div>
+
+        <div class="highlight-card">
+          <div class="highlight-left">
+            <div class="highlight-icon">💎</div>
+          </div>
+          <div class="highlight-content">
+            <h3 class="highlight-title">{{ mostExpensive()?.title }}</h3>
+            <p class="highlight-desc">{{ mostExpensive()?.brand }} {{ mostExpensive()?.model }}</p>
+            <div class="highlight-footer">
+              <span class="highlight-price">R$ {{ mostExpensive()?.price | number: '1.0-0' }}</span>
+              <span [ngClass]="'status-badge status-' + statusClass(mostExpensive()?.status || '')">
+                {{ getStatusLabel(mostExpensive()?.status || '') }}
+              </span>
+            </div>
+          </div>
+          <div class="highlight-right">
+            <div class="highlight-trend">
+              <div class="trend-number">{{ mostExpensive()?.mileage | number: '1.0-0' }} km</div>
+              <div class="trend-label">Quilometragem</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
