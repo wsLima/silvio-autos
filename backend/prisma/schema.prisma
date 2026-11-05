@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+enum ListingStatus {
+  ACTIVE
+  INACTIVE
+  SOLD
+}
+
+model CarListing {
+  id                String            @id @default(uuid())
+  title             String
+  brand             String
+  model             String
+  year              Int
+  manufacturingYear Int
+  locality          String
+  price             Decimal           @db.Decimal(12, 2)
+  mileage           Int
+  description       String
+  features          String[]
+  status            ListingStatus     @default(ACTIVE)
+  isHighlight       Boolean           @default(false)
+  contactName       String
+  contactPhone      String
+  contactWhatsapp   String
+  contactEmail      String
+  images            CarListingImage[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([status])
+  @@index([brand])
+}
+
+model CarListingImage {
+  id        String     @id @default(uuid())
+  listing   CarListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String
+  key       String
+  url       String
+  order     Int        @default(0)
+
+  @@index([listingId])
+}
