@@ -1,0 +1,82 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Acesso ao Portal</h1>
+      <p>Bem-vindo de volta</p>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error() }}
+        <button
+          type="button"
+          class="btn-close"
+          (click)="authService.clearError()"
+          aria-label="Close"
+        ></button>
+      </div>
+    }
+
+    <form (ngSubmit)="onLogin()" class="login-form">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          [class.is-invalid]="hasError('email')"
+          id="email"
+          placeholder="seu@email.com"
+          [(ngModel)]="email"
+          name="email"
+          required
+          [disabled]="isLoading()"
+        />
+        @if (hasError('email')) {
+          <span class="field-error">Campo obrigatório</span>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Senha</label>
+        <div class="password-input-group">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            [class.is-invalid]="hasError('password')"
+            id="password"
+            placeholder="Digite sua senha"
+            [(ngModel)]="password"
+            name="password"
+            required
+            [disabled]="isLoading()"
+          />
+          <button
+            type="button"
+            class="btn-show-password"
+            (click)="togglePasswordVisibility()"
+            [disabled]="isLoading()"
+            tabindex="-1"
+          >
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        @if (hasError('password')) {
+          <span class="field-error">Campo obrigatório</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span
+            class="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Entrando...
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
+  </div>
+</div>
